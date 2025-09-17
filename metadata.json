@@ -1,0 +1,5 @@
+{
+  "name": "Candidate Data Processor",
+  "description": "An assistant to upload two Excel sheets with candidate data, merge them by candidate name, and display a comprehensive summary card for each candidate.",
+  "requestFramePermissions": []
+}
