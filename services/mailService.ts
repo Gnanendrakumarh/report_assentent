@@ -31,7 +31,7 @@ const transporter = nodemailer.createTransport({
   secure: false, // STARTTLS
   auth: {
     user: process.env.OUTLOOK_USER,
-    pass: process.env.OUTLOOK_PASS, 
+    pass: process.env.OUTLOOK_PASS, // App password
   },
   tls: {
     rejectUnauthorized: false, // optional, like PHPMailer SSL options
@@ -172,7 +172,8 @@ app.post("/send-whatsapp", async (req, res) => {
 
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Mail + WhatsApp server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
