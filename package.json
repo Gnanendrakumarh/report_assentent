@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "frontend": "vite",
-    "backend": "ts-node services/mailService.ts",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+    "build:backend": "tsc",
+    "build:frontend": "vite build",
+    "start": "node dist/services/mailService.js"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
