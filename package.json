@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node dist-server/services/mailService.js"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
@@ -16,7 +17,8 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.6",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

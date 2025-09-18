@@ -50,23 +50,36 @@ app.post("/send-mails", async (req, res) => {
 
       const statusMessage = statusMessages[candidate.status] || "";
 
+      // Build OCS section
+      let ocsSection = `
+        <p><b>OCS 1 (${candidate.ocs1Date || "N/A"}):</b> ${candidate.ocs1Status}</p>
+        <p><b>OCS 2 (${candidate.ocs2Date || "N/A"}):</b> ${candidate.ocs2Status}</p>
+      `;
+
+      
+      if (
+        candidate.ocs1Status?.toLowerCase().trim() === "not attended" ||
+        candidate.ocs2Status?.toLowerCase().trim() === "not attended"
+      ) {
+        ocsSection += `
+          <p>Kindly request you to attend all the Online-Contact-Sessions which is a mandatory and essential part of your course.</p>
+        `;
+      }
+
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: candidate.email,
         subject: "Your Learners Report -AUGUST 2025",
         html: `
-        
           <h3>Dear ${candidate.name},</h3>
           <br>
-        <p>Greetings from MedTrain - Allergy Asthma Specialist Course.</p>
-        <p>Please find the below-mentioned table of your progress for the month of August 2025.</p>
+          <p>Greetings from MedTrain - Allergy Asthma Specialist Course.</p>
+          <p>Please find the below-mentioned table of your progress for the month of August 2025.</p>
           <p><b>Chapter Complection:</b> ${candidate.chapterCompletion}</p>
           <p><b>Assessment:</b> ${candidate.marksObtained}/${candidate.maxMarks}</p>
-          <p><b>OCS 1 (${candidate.ocs1Date || "N/A"}):</b> ${candidate.ocs1Status}</p>
-          <p><b>OCS 2 (${candidate.ocs2Date || "N/A"}):</b> ${candidate.ocs2Status}</p>
+          ${ocsSection}
           <p><b>Status:</b> ${candidate.status}</p>
           <p>${statusMessage}</p>
-          <p>Kindly request you to attend all the Online-Contact-Sessions which is a mandatory and essential part of your course.</p>
           <p>For Technical and Academic challenges please contact - 7975764489.</p>
           <p>Note: We request you to rename yourself to your registered name during online sessions to ensure your attendance is marked correctly.</p>
           <p><b>Note</b>:<li>Step 1️⃣ | Finish Viewing the Video on your Media Player.</li>
@@ -87,6 +100,7 @@ app.post("/send-mails", async (req, res) => {
     res.status(500).json({ error: "Failed to send mails" });
   }
 });
+
 
 // ========== WHATSAPP ROUTE ==========
 app.post("/send-whatsapp", async (req, res) => {
