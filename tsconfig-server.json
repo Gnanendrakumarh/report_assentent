@@ -1,16 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2022"],
-    "skipLibCheck": true,
-    "types": ["node"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "module": "CommonJS",
     "outDir": "dist-server",
-    "isolatedModules": false,
-    "allowJs": true
+    "rootDir": "services",
+    "esModuleInterop": true,
+    "strict": true
   },
-  "include": ["services/mailService.ts"],
-  "exclude": ["services/dataProcessor.ts"]
+  "include": ["services/**/*.ts"]
 }
