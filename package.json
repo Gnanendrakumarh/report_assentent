@@ -4,12 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-   "build:server": "tsc -p tsconfig.server.json",
-  "start": "node server-build/mailService.js"
-
+    "frontend": "vite",
+    "backend": "ts-node services/mailService.ts",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
   },
   "dependencies": {
     "body-parser": "^2.2.0",
@@ -27,6 +24,7 @@
     "@types/node": "^22.14.0",
     "@types/nodemailer": "^7.0.1",
     "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.1",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
