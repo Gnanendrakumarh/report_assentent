@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:server": "tsc -p tsconfig.json",
-  "start": "node dist/services/mailService.js"
+   "build:server": "tsc -p tsconfig.server.json",
+  "start": "node server-build/mailService.js"
 
   },
   "dependencies": {
