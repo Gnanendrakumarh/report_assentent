@@ -130,7 +130,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({ candidate, ocs1Date, ocs2
         `WhatsApp message sent to ${candidate.phone || "No phone number"}`
     );
   } catch (err) {
-    console.error("❌ Error in handleSendMail:", err);
+    console.error(" Error in handleSendMail:", err);
     alert("Failed to send mail or WhatsApp");
   }
 };

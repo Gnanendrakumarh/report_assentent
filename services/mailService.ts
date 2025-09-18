@@ -3,7 +3,6 @@ import nodemailer from "nodemailer";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch";
 
 dotenv.config({ path: ".env.local" });
 
@@ -25,14 +24,17 @@ const statusMessages: Record<string, string> = {
   [Status.NoProgress]: `We appreciate the effort you are putting in, and we kindly request you to expedite the completion of the lectures within the allocated timeframe. We would like to hear about any difficulties or challenges you may be facing.`,
 };
 
-// Configure transporter with Gmail SMTP
+// Configure transporter with Outlook SMTP
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp.office365.com",
   port: 587,
-  secure: false,
+  secure: false, // STARTTLS
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.OUTLOOK_USER,
+    pass: process.env.OUTLOOK_PASS, 
+  },
+  tls: {
+    rejectUnauthorized: false, // optional, like PHPMailer SSL options
   },
 });
 
@@ -46,7 +48,7 @@ app.post("/send-mails", async (req, res) => {
 
   try {
     for (const candidate of candidates) {
-      console.log(` Sending email to ${candidate.email} ...`);
+      console.log(`Sending email to ${candidate.email} ...`);
 
       const statusMessage = statusMessages[candidate.status] || "";
 
@@ -56,7 +58,6 @@ app.post("/send-mails", async (req, res) => {
         <p><b>OCS 2 (${candidate.ocs2Date || "N/A"}):</b> ${candidate.ocs2Status}</p>
       `;
 
-      
       if (
         candidate.ocs1Status?.toLowerCase().trim() === "not attended" ||
         candidate.ocs2Status?.toLowerCase().trim() === "not attended"
@@ -67,15 +68,15 @@ app.post("/send-mails", async (req, res) => {
       }
 
       await transporter.sendMail({
-        from: process.env.SMTP_USER,
+        from: process.env.OUTLOOK_USER || "contact@med-train.com",
         to: candidate.email,
-        subject: "Your Learners Report -AUGUST 2025",
+        subject: "Your Learners Report - AUGUST 2025",
         html: `
           <h3>Dear ${candidate.name},</h3>
           <br>
           <p>Greetings from MedTrain - Allergy Asthma Specialist Course.</p>
           <p>Please find the below-mentioned table of your progress for the month of August 2025.</p>
-          <p><b>Chapter Complection:</b> ${candidate.chapterCompletion}</p>
+          <p><b>Chapter Completion:</b> ${candidate.chapterCompletion}</p>
           <p><b>Assessment:</b> ${candidate.marksObtained}/${candidate.maxMarks}</p>
           ${ocsSection}
           <p><b>Status:</b> ${candidate.status}</p>
@@ -91,18 +92,18 @@ app.post("/send-mails", async (req, res) => {
         `,
       });
 
-      console.log(` Email sent to ${candidate.email}`);
+      console.log(`Email sent to ${candidate.email}`);
     }
 
-    res.json({ message: " Mail(s) sent successfully!" });
+    res.json({ message: "Mail(s) sent successfully!" });
   } catch (err) {
-    console.error(" Error sending mail:", err);
+    console.error("Error sending mail:", err);
     res.status(500).json({ error: "Failed to send mails" });
   }
 });
 
-
 // ========== WHATSAPP ROUTE ==========
+
 app.post("/send-whatsapp", async (req, res) => {
   const { candidates } = req.body;
 
@@ -117,20 +118,20 @@ app.post("/send-whatsapp", async (req, res) => {
 
       const payload = {
   to: String(candidate.phone), 
-  name: "assessmentreportingassistant",
+  name: "reportassist",
   components: [
     {
       type: "body",
       parameters: [
-        { type: "text", text: candidate.name || "-" },              
-        { type: "text", text: String(candidate.chapterCompletion) || "0" }, 
-        { type: "text", text: String(candidate.totalChapters) || "0" },     
-        { type: "text", text: String(candidate.marksObtained) || "0" },     
-        { type: "text", text: String(candidate.maxMarks) || "0" },          
-        { type: "text", text: String(candidate.skippedQuestions) || "0" },  
-        { type: "text", text: `OCS 1 (${candidate.ocs1Date || "N/A"}) : ${candidate.ocs1Status || "N/A"}` },  
-        { type: "text", text: `OCS 2 (${candidate.ocs2Date || "N/A"}) : ${candidate.ocs2Status || "N/A"}` }, 
-        { type: "text", text: candidate.status || "N/A" },           
+        { type: "text", text: candidate.name},              
+        { type: "text", text: String(candidate.chapterCompletion)}, 
+            
+        { type: "text", text: String(candidate.marksObtained)},     
+        { type: "text", text: String(candidate.maxMarks)},          
+        { type: "text", text: String(candidate.skippedQuestions)},  
+        { type: "text", text: `OCS 1 (${candidate.ocs1Date}) : ${candidate.ocs1Status}` },  
+        { type: "text", text: `OCS 2 (${candidate.ocs2Date}) : ${candidate.ocs2Status}` }, 
+        { type: "text", text: candidate.status},           
         { type: "text", text: "August 2025" },              
       ],
     },
