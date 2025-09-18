@@ -169,6 +169,12 @@ app.post("/send-whatsapp", async (req, res) => {
   }
 });
 
+
+// Root route for testing
+app.get("/", (req, res) => {
+  res.send(" Mail + WhatsApp API is running on Render!");
+});
+
 // Start server
 app.listen(5000, () => {
   console.log(" Mail + WhatsApp server running on http://localhost:5000");
